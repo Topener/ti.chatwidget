@@ -3,6 +3,10 @@
 	bottom: '60dp'
 }
 
+"#listView[platform=ios]": {
+	keyboardDismissMode: Ti.UI.iOS.KEYBOARD_DISMISS_MODE_INTERACTIVE
+}
+
 ".message": {
 	font: {
 		fontSize: 14
@@ -64,5 +68,28 @@
 		right: 10
 	},
 	color: "#333",
-	hintText: "Type your message here"
+	hintText: "Type your message here",
+	borderRadius: 4,
+	returnKeyType: Titanium.UI.RETURNKEY_SEND
+}
+
+"#sendMessageWrapper": {
+	right: 10,
+	opacity: 0,
+	width: 30,
+	height: 30,
+	top: 5,
+	borderRadius: 4,
+	backgroundColor: '#224567'
+}
+
+"#sendMessage": {
+	width: Ti.UI.SIZE,
+	touchEnabled: false,
+	font: {
+		fontFamily: 'FontAwesome5Free-Solid',
+		fontSize: 20
+	},
+	color: "#fff",
+	text: '' // fa arrow-circle-up
 }

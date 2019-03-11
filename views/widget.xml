@@ -1,6 +1,7 @@
 <Alloy>
 	<Collection src="Chat" instance="true" id="ChatMessages" />
-	<ListView id="listView" backgroundColor="white" defaultItemTemplate="other">
+
+	<ListView id="listView" backgroundColor="white" defaultItemTemplate="other" onItemclick="handleMessageClick">
 
 		<Templates>
 
@@ -22,6 +23,9 @@
 	</ListView>
 
 	<View id="chatMessageWrapper">
-		<TextField id="chatBox" onReturn="sendMessage" />
+		<TextField id="chatBox" onReturn="sendMessage" onChange="handleMessageChange" />
+		<View id="sendMessageWrapper" onClick="sendMessage">
+			<Label id="sendMessage" />
+		</View>
 	</View>
 </Alloy>

@@ -118,7 +118,15 @@ function scrollToLastItem() {
 
 function sendMessage() {
     var text = $.chatBox.value;
+
+    if (text.length === 0) {
+        return false;
+    }
+
     $.chatBox.value = '';
+    handleMessageChange();
+    
+    // @TODO: Make sure textfield remains focussed
 
     var message = {
         me: true,
@@ -128,7 +136,7 @@ function sendMessage() {
     };
     
     exports.addMessage(message);
-
+    
     $.trigger('addedMessage', {
         message: message,
         updateId: updateId
@@ -139,7 +147,36 @@ function sendMessage() {
 function updateId(oldId, newId) {
     var model = $.ChatMessages.get(oldId);
     model.set({id: newId});
-    console.log($.ChatMessages.get(newId).toJSON());
+}
+
+var lastLength = 0;
+function handleMessageChange() {
+    if ($.chatBox.value.length > 0 && lastLength == 0) {
+        $.chatBox.animate({
+            right: 50,
+            duration: 250
+        });
+
+        $.sendMessageWrapper.animate({
+            opacity: 1,
+            duration: 250
+        });
+    }
+    else if ($.chatBox.value.length === 0 && lastLength !== 0) {
+        $.chatBox.animate({
+            right: 10,
+            duration: 250
+        });
+        $.sendMessageWrapper.animate({
+            opacity: 0,
+            duration: 250
+        });
+    }
+    lastLength = $.chatBox.value.length;
+}
+
+function handleMessageClick(e) {
+    $.chatBox.blur();
 }
 
 function init() {
