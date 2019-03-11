@@ -1,3 +1,8 @@
+"#listView": {
+	top: 0,
+	bottom: '60dp'
+}
+
 ".message": {
 	font: {
 		fontSize: 14
@@ -42,3 +47,22 @@
 	selectionStyle: Ti.UI.iOS.ListViewCellSelectionStyle.NONE
 }
 
+"#chatMessageWrapper": {
+	bottom: 0,
+	height: '60dp',
+	backgroundColor: "#ddd"
+}
+
+"#chatBox": {
+	left: 10,
+	right: 10,
+	height: '50dp',
+	top: 5,
+	backgroundColor: "#fff",
+	padding: {
+		left: 10,
+		right: 10
+	},
+	color: "#333",
+	hintText: "Type your message here"
+}

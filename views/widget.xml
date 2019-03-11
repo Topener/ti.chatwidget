@@ -19,6 +19,9 @@
 			</ItemTemplate>
 
 		</Templates>
-
 	</ListView>
+
+	<View id="chatMessageWrapper">
+		<TextField id="chatBox" onReturn="sendMessage" />
+	</View>
 </Alloy>
