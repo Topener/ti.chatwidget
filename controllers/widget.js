@@ -1,9 +1,63 @@
+/**
+ * TODO:
+ * - Display images
+ * - Download images automatically
+ * - Ability to take photo/select image to add to message
+ * - Display usernames
+ * - Display user images
+ * - Configuration for header titles
+ * - Configuration for time display on messages
+ * - Configuration for colors
+ * - Configuration for text font/size/colors
+ */
+
 var calcs = require(WPATH('calcs'));
 var moment = require('/alloy/moment');
 
 var sections = [];
 var messages = {};
 var listviewBottom = 60;
+var config = {
+    meMessageBox: {
+        backgroundColor: "#AFBF92"
+    },
+    otherMessageBox: {
+        backgroundColor: "#bbb"
+    },
+    meMessageText: {
+        color: "#fff",
+        font: {
+            fontSize: 14
+        }
+    },
+    otherMessageText: {
+        color: "#333",
+        font: {
+            fontSize: 14
+        }
+    },
+    meMessageTime: {
+
+    }, 
+    otherMessageTime: {
+
+    },
+    dayHeader: {
+        format: "MMMM Do"
+    }
+};
+
+_.each(config, function(value, prop) {
+    if ($.args.hasOwnProperty(prop)) {
+        parseConfig(prop, $.args[prop]);
+    }
+});
+
+function parseConfig(prop, data) {
+    _.each(data, function(value, arg) {
+        config[prop][arg] = value;
+    });
+}
 
 if ($.args.__parentSymbol && $.args.__parentSymbol.apiName === 'Ti.UI.Window') {
     var window = $.args.__parentSymbol;
@@ -56,15 +110,18 @@ function onRemoveMessage (model) {
 }
 
 function generateListItem(model) {
+    var textObject = model.attributes.me ? config.meMessageText : config.otherMessageText;
+    textObject.text = model.attributes.message;
+
+    var timeTextObject = model.attributes.me ? config.meMessageTime : config.otherMessageTime;
+    timeTextObject.text = calcs.toTime(model.attributes.dateTime, timeTextObject.format);
+
     return {
         template: model.attributes.me ? 'me' : 'other',
-        message: {
-            text: model.attributes.message
-        },
-        time: {
-            text: calcs.toTime(model.attributes.dateTime)
-        },
-        timestamp: calcs.toUnix(model.attributes.dateTime)        
+        message: textObject,
+        time: timeTextObject,
+        timestamp: calcs.toUnix(model.attributes.dateTime),
+        wrapper: model.attributes.me ? config.meMessageBox : config.otherMessageBox
     };
 }
 
@@ -91,7 +148,7 @@ function createSection(dateTime) {
     messages[date] = [];
     $.listView.insertSectionAt(sections.indexOf(date), Ti.UI.createListSection({
         date: date,
-        headerTitle: calcs.headerDate(dateTime)
+        headerTitle: calcs.headerDate(dateTime, config.dayHeader.format)
     }));
     return sections.indexOf(date);
 

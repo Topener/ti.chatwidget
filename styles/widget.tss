@@ -37,14 +37,12 @@
 
 "#otherMessageWrapper": {
 	left: 20,
-	right: '20%',
-	backgroundColor: "#ddd"
+	right: '20%'
 }
 
 "#meMessageWrapper": {
 	right: 20,
-	left: '20%',
-	backgroundColor: "#AFBF92"
+	left: '20%'
 }
 
 ".listitem[platform=ios]": {
