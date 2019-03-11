@@ -1,0 +1,44 @@
+".message": {
+	font: {
+		fontSize: 14
+	},
+	color: "#333",
+	left: 6,
+	top: 6,
+	bottom: 16,
+	right: 6,
+	height: Ti.UI.SIZE
+}
+
+".time": {
+	right: 6,
+	bottom: 4,
+	font: {
+		fontSize: 9
+	},
+	color: "#666"
+}
+
+
+".messageWrapper": {
+	top: 10,
+	bottom: 10,
+	height: Ti.UI.SIZE
+}
+
+"#otherMessageWrapper": {
+	left: 20,
+	right: '20%',
+	backgroundColor: "#ddd"
+}
+
+"#meMessageWrapper": {
+	right: 20,
+	left: '20%',
+	backgroundColor: "#AFBF92"
+}
+
+".listitem[platform=ios]": {
+	selectionStyle: Ti.UI.iOS.ListViewCellSelectionStyle.NONE
+}
+

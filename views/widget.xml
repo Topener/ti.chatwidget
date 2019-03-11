@@ -1,0 +1,24 @@
+<Alloy>
+	<Collection src="Chat" instance="true" id="ChatMessages" />
+	<ListView id="listView" backgroundColor="white" defaultItemTemplate="other">
+
+		<Templates>
+
+			<ItemTemplate name="other" class="listitem">
+				<View class="messageWrapper" id="otherMessageWrapper" height="Ti.UI.SIZE" bindId="wrapper">
+					<Label class="message" id="otherMessage" bindId="message" />
+					<Label class="time" id="otherTime" bindId="time" />
+				</View>
+			</ItemTemplate>
+
+			<ItemTemplate name="me" class="listitem">
+				<View class="messageWrapper" id="meMessageWrapper" height="Ti.UI.SIZE" bindId="wrapper">
+					<Label class="message" id="meMessage" bindId="message" />
+					<Label class="time" id="meTime" bindId="time" />
+				</View>
+			</ItemTemplate>
+
+		</Templates>
+
+	</ListView>
+</Alloy>
