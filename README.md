@@ -8,8 +8,8 @@ Currently not fully functional yet. Features right now:
 - add messages
 - remove messages
 - adjust messages
-
-Chatting itself (input) is not yet supported. 
+- chat input
+- local/remote images
 
 This widget is being developed live on stream https://twitch.tv/wraldpyk
 
