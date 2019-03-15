@@ -23,7 +23,7 @@
 	</ListView>
 
 	<View id="chatMessageWrapper">
-		<TextField id="chatBox" onReturn="sendMessage" onChange="handleMessageChange" />
+		<TextField id="chatBox" onReturn="sendMessage" onChange="handleMessageChange" onFocus="handleFocus" />
 		<View id="sendMessageWrapper" onClick="sendMessage">
 			<Label id="sendMessage" />
 		</View>

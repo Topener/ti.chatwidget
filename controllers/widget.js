@@ -6,9 +6,6 @@
  * - Display usernames
  * - Display user images
  * - Configuration for header titles
- * - Configuration for time display on messages
- * - Configuration for colors
- * - Configuration for text font/size/colors
  */
 
 var calcs = require(WPATH('calcs'));
@@ -17,6 +14,7 @@ var moment = require('/alloy/moment');
 var sections = [];
 var messages = {};
 var listviewBottom = 60;
+
 var config = {
     meMessageBox: {
         backgroundColor: "#AFBF92"
@@ -234,6 +232,11 @@ function handleMessageChange() {
 
 function handleMessageClick(e) {
     $.chatBox.blur();
+}
+
+function handleFocus() {
+    if (OS_IOS) return;
+    setTimeout(scrollToLastItem,500);
 }
 
 function init() {

@@ -4,7 +4,7 @@
 }
 
 "#listView[platform=ios]": {
-	keyboardDismissMode: Ti.UI.iOS.KEYBOARD_DISMISS_MODE_INTERACTIVE
+	keyboardDismissMode: Ti.UI.iOS.KEYBOARD_DISMISS_MODE_ON_DRAG
 }
 
 ".message": {
