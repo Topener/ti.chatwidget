@@ -1,6 +1,8 @@
 # ti.chatwidget
 A widget for adding chat to your Titanium app
 
+**This is very much a WORK IN PROGRESS. Not production ready yet. PR's welcome**
+
 Currently not fully functional yet. Features right now:
 
 - add messages
