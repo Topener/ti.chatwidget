@@ -5,6 +5,8 @@
  * - Display user images
  * - Configuration for header titles
  * - dynamic box width
+ * - fix image aspect ratio android
+ * - fix toolbar android
  */
 
 var calcs = require(WPATH('calcs'));
@@ -13,7 +15,9 @@ var moment = require('/alloy/moment');
 
 var sections = [];
 var messages = {};
-var listviewBottom = 60;
+var listviewBottom = 50;
+var chatWrapperHeight = 50;
+var messageImage;
 
 var config = {
     meMessageBox: {
@@ -97,7 +101,6 @@ function onAddMessage(model) {
 function onChangeMessage(model){
     var sectionIndex = findOrCreateSection(model.attributes.dateTime);
     var messagesIndex = messages[model.attributes.day].indexOf(model.attributes.timestamp);
-    console.warn('indexes', sectionIndex, messagesIndex);
     $.listView.sections[sectionIndex].updateItemAt(messagesIndex, generateListItem(model),{animated: true});
 }
 
@@ -114,6 +117,54 @@ function onRemoveMessage (model) {
     $.listView.sections[sectionIndex].deleteItemsAt(messageIndex, 1, {animated: true});
 }
 
+function handleGalleryButton() {
+    if (Ti.Media.hasPhotoGalleryPermissions()) {
+        selectGalleryImage();
+    } else {
+        $.trigger('requestPermission', {
+            type: 'gallery',
+            success: selectGalleryImage
+        });
+    }
+}
+
+function selectGalleryImage() {
+    Ti.Media.openPhotoGallery({
+        success: function(e) {
+            addPhotoToMessage(e.media);
+        }
+    });
+}
+
+
+function handleCameraButton() {
+    if (Ti.Media.hasCameraPermissions()) {
+        takePhoto();
+    } else {
+        $.trigger('requestPermission', {
+            type: 'camera',
+            success: takePhoto
+        });
+    }
+}
+
+function takePhoto() {
+    Ti.Media.showCamera({
+        success: function(e) {
+            addPhotoToMessage(e.media);
+        }
+    });
+}
+
+function addPhotoToMessage(media) {
+    $.imageWrapper.height = 100;
+    chatWrapperHeight += $.imageWrapper.height;
+    $.chatMessageWrapper.height = chatWrapperHeight + 'dp';
+    $.messageImage.image = media;
+    messageImage = media;
+    setTimeout($.chatBox.focus,1000);
+}
+
 function generateListItem(model) {
     var textObject = model.attributes.me ? config.meMessageText : config.otherMessageText;
     textObject.text = model.attributes.message;
@@ -123,7 +174,6 @@ function generateListItem(model) {
 
     var template = model.attributes.me ? 'me' : 'other';
 
-
     var imageObject = {};
 
     if (model.attributes.image) {
@@ -131,8 +181,9 @@ function generateListItem(model) {
 
         var localImage = images.getLocalImage(model);
 
+
+        // TODO: move to lib
         if (localImage) {
-            console.warn(localImage.height, localImage.width);
             
             var boxWidth = Ti.Platform.displayCaps.platformWidth;
 
@@ -212,8 +263,10 @@ function createSection(dateTime) {
 function handleKeyboardChange(e){
 
     var platformHeight = Ti.Platform.displayCaps.platformHeight;
+    chatWrapperHeight = platformHeight - e.keyboardFrame.y + listviewBottom - (platformHeight !== e.keyboardFrame.y ? window.safeAreaPadding.bottom : 0);
+    chatWrapperHeight += $.imageWrapper.height;
     $.chatMessageWrapper.animate({
-        height: platformHeight - e.keyboardFrame.y + listviewBottom - (platformHeight !== e.keyboardFrame.y ? window.safeAreaPadding.bottom : 0),
+        height: chatWrapperHeight,
         duration: e.animationDuration * 1000
     });
 
@@ -223,6 +276,8 @@ function handleKeyboardChange(e){
     }, scrollToLastItem);
 }
 
+
+
 function scrollToLastItem() {
     var lastSection = $.listView.sections[$.listView.sections.length - 1];
     $.listView.scrollToItem($.listView.sections.length - 1, lastSection.items.length -1, {animated: false});
@@ -231,7 +286,7 @@ function scrollToLastItem() {
 function sendMessage() {
     var text = $.chatBox.value;
 
-    if (text.length === 0) {
+    if (text.length === 0 && !$.messageImage.image) {
         return false;
     }
 
@@ -244,8 +299,18 @@ function sendMessage() {
         me: true,
         message: text,
         dateTime: moment(new Date()).format(),
-        id: new Date().getTime()
+        id: new Date().getTime(),
     };
+
+    if (messageImage) {
+        message.image = messageImage;
+        messageImage = false;
+        $.messageImage.image = null;
+        chatWrapperHeight -= $.imageWrapper.height;
+        $.imageWrapper.height = 0;
+        $.chatMessageWrapper.height = chatWrapperHeight + 'dp';
+    
+    }
     
     exports.addMessage(message);
     
@@ -299,8 +364,10 @@ function handleFocus() {
 function init() {
     window.removeEventListener('postlayout', init);
     
-    listviewBottom = 60 + window.safeAreaPadding.bottom;
-    $.chatMessageWrapper.height = listviewBottom + 'dp';
+    listviewBottom = 50 + window.safeAreaPadding.bottom;
+    chatWrapperHeight = listviewBottom;
+
+    $.chatMessageWrapper.height = chatWrapperHeight + 'dp';
     $.listView.bottom = listviewBottom + 'dp';
 
     if (OS_IOS) Ti.App.addEventListener('keyboardframechanged', handleKeyboardChange);

@@ -40,9 +40,27 @@
 	</ListView>
 
 	<View id="chatMessageWrapper">
-		<TextField id="chatBox" onReturn="sendMessage" onChange="handleMessageChange" onFocus="handleFocus" />
-		<View id="sendMessageWrapper" onClick="sendMessage">
-			<Label id="sendMessage" />
+		<View id="imageWrapper" height="0" backgroundColor="#fff" top="2">
+			<ImageView id="messageImage" height="95" top="3" left="10" />
+		</View>
+		
+		<View>
+			<TextField id="chatBox" onReturn="sendMessage" onChange="handleMessageChange" onFocus="handleFocus">
+				<KeyboardToolbar>
+					<Toolbar id="toolbar">
+						<Items>
+							<Label class="fa toolbarButton" id="cameraButton" onClick="handleCameraButton"  />
+							<Button type="FIXED_SPACE" width="20" />
+							<Label class="fa toolbarButton" id="imageButton" onClick="handleGalleryButton" />
+							<Button type="FLEXIBLE_SPACE" />
+						</Items>
+					</Toolbar>
+				</KeyboardToolbar>
+			</TextField>
+
+			<View id="sendMessageWrapper" onClick="sendMessage">
+				<Label id="sendMessage" class="fa" />
+			</View>
 		</View>
 	</View>
 </Alloy>

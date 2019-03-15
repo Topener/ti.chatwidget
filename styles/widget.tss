@@ -51,14 +51,15 @@
 
 "#chatMessageWrapper": {
 	bottom: 0,
-	height: '60dp',
-	backgroundColor: "#ddd"
+	height: '50dp',
+	backgroundColor: "#ddd",
+	layout: 'vertical'
 }
 
 "#chatBox": {
 	left: 10,
 	right: 10,
-	height: '50dp',
+	height: '40dp',
 	top: 5,
 	backgroundColor: "#fff",
 	padding: {
@@ -84,14 +85,33 @@
 "#sendMessage": {
 	width: Ti.UI.SIZE,
 	touchEnabled: false,
-	font: {
-		fontFamily: 'FontAwesome5Free-Solid',
-		fontSize: 20
-	},
 	color: "#fff",
 	text: '' // fa arrow-circle-up
 }
 
 ".messageImage": {
 	top: 0,
+}
+
+".fa": {
+	font: {
+		fontFamily: 'FontAwesome5Free-Solid',
+		fontSize: 20
+	}
+}
+
+".toolbarButton": {
+	color: "#224567",
+	font: {
+		fontSize: 24
+	}
+}
+
+
+"#cameraButton": {
+	text: "",
+}
+
+"#imageButton": {
+	text: ""
 }
