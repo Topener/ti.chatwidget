@@ -31,7 +31,8 @@ Default message structure:
   id: 1,
   message: "Hello, World!",
   me: true,
-  dateTime: '2019-03-07 14:46:04'
+  dateTime: '2019-03-07 14:46:04',
+  image: 'myImage.jpg' // !optional! Supports local blobs, local images & remote images.
 }
 ```
 *`dateTime` needs to be parsable by momentjs, `me` determines wether the message is on the right or on the left (ping-pong layout)*
