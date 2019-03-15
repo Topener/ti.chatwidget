@@ -85,3 +85,34 @@ This function will get the following object:
 Call `updateId` function with the generated (`oldId`) ID and the server generated `newId`. This way you can keep control over the newly created message. 
 
 If server fails to create message in chat you could always call `removeMessage` with `oldId`
+
+
+## Camera & Gallery Permissions
+
+The widget will ask for permission to use the camera/select photo from gallery. This is handled through an event.
+
+First add an event listener to the widget
+```xml
+<Widget src="chat" id="chat" onRequestPermission="handlePermissions" />
+```
+
+Add a function to your controller to ask for permission(s). Both "gallery" and "camera" permissions can be requested. Below a sample of the code.
+
+```js
+function handlePermissions(permission) {
+	if (permission.type == 'gallery') {
+		Ti.Media.requestPhotoGalleryPermissions(function(e){ 
+			if (e.success) {
+				permission.success();
+			}
+		});
+	}
+	if (permission.type == 'camera') {
+		Ti.Media.requestCameraPermissions(function(e){ 
+			if (e.success) {
+				permission.success();
+			}
+		});
+	}
+}
+```
