@@ -1,14 +1,14 @@
 /**
  * TODO:
- * - Display images
- * - Download images automatically
  * - Ability to take photo/select image to add to message
  * - Display usernames
  * - Display user images
  * - Configuration for header titles
+ * - dynamic box width
  */
 
 var calcs = require(WPATH('calcs'));
+var images = require(WPATH('images'));
 var moment = require('/alloy/moment');
 
 var sections = [];
@@ -17,10 +17,14 @@ var listviewBottom = 60;
 
 var config = {
     meMessageBox: {
-        backgroundColor: "#AFBF92"
+        backgroundColor: "#AFBF92",
+        right: 20,
+        left: '20%'
     },
     otherMessageBox: {
-        backgroundColor: "#bbb"
+        backgroundColor: "#bbb",
+        left: 20,
+        right: '20%'
     },
     meMessageText: {
         color: "#fff",
@@ -76,7 +80,9 @@ $.ChatMessages.on('change', onChangeMessage);
 $.ChatMessages.on('remove destroy', onRemoveMessage);
 
 function onAddMessage(model) {
-
+    if (model.attributes.image) {
+        
+    }
     var sectionIndex = findOrCreateSection(model.attributes.dateTime);
     messages[model.attributes.day].push(model.attributes.timestamp);
     messages[model.attributes.day].sort();
@@ -91,6 +97,7 @@ function onAddMessage(model) {
 function onChangeMessage(model){
     var sectionIndex = findOrCreateSection(model.attributes.dateTime);
     var messagesIndex = messages[model.attributes.day].indexOf(model.attributes.timestamp);
+    console.warn('indexes', sectionIndex, messagesIndex);
     $.listView.sections[sectionIndex].updateItemAt(messagesIndex, generateListItem(model),{animated: true});
 }
 
@@ -114,12 +121,62 @@ function generateListItem(model) {
     var timeTextObject = model.attributes.me ? config.meMessageTime : config.otherMessageTime;
     timeTextObject.text = calcs.toTime(model.attributes.dateTime, timeTextObject.format);
 
+    var template = model.attributes.me ? 'me' : 'other';
+
+
+    var imageObject = {};
+
+    if (model.attributes.image) {
+        template += 'Image';
+
+        var localImage = images.getLocalImage(model);
+
+        if (localImage) {
+            console.warn(localImage.height, localImage.width);
+            
+            var boxWidth = Ti.Platform.displayCaps.platformWidth;
+
+            // TODO: clean up next line
+            _.each([config[model.attributes.me ? 'meMessageBox' : 'otherMessageBox'].left, config[model.attributes.me ? 'meMessageBox' : 'otherMessageBox'].right], function(amount) {
+                if (typeof amount === 'string' && amount.indexOf('%')) {
+                    amount = parseInt(amount.replace('%', ''));
+                    boxWidth -= Ti.Platform.displayCaps.platformWidth / 100 * amount;
+                } else {
+                    boxWidth -= parseInt(amount);
+                }
+            });
+
+            var imageWidth = boxWidth;
+            var imageHeight = 0;
+
+            if (localImage.width > boxWidth) {
+                var ratio = boxWidth / localImage.width;
+                imageHeight = localImage.height * ratio;
+            } else {
+                imageWidth = localImage.width;
+                imageHeight = localImage.height
+            }
+
+            imageObject.image =localImage;
+            imageObject.height = imageHeight;
+            imageObject.width = imageWidth;
+            textObject.top = imageHeight + 6;
+        } else {
+            imageObject.image = WPATH('/images/placeholder.png');
+            imageObject.height = 100;
+            imageObject.width = 300;
+            textObject.top = 106;
+            images.fetchImage(model.toJSON(), exports.updateMessage);
+        }
+    }
+
     return {
-        template: model.attributes.me ? 'me' : 'other',
+        template: template,
         message: textObject,
         time: timeTextObject,
         timestamp: calcs.toUnix(model.attributes.dateTime),
-        wrapper: model.attributes.me ? config.meMessageBox : config.otherMessageBox
+        wrapper: model.attributes.me ? config.meMessageBox : config.otherMessageBox,
+        image: imageObject
     };
 }
 

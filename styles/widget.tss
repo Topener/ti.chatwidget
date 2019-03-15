@@ -91,3 +91,7 @@
 	color: "#fff",
 	text: '' // fa arrow-circle-up
 }
+
+".messageImage": {
+	top: 0,
+}
